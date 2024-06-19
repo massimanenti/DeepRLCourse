@@ -20,7 +20,6 @@ from cs285.infrastructure.replay_buffer import ReplayBuffer
 from cs285.policies.MLP_policy import MLPPolicySL
 from cs285.policies.loaded_gaussian_policy import LoadedGaussianPolicy
 
-
 # how many rollouts to save as videos to tensorboard
 MAX_NVIDEO = 2
 MAX_VIDEO_LEN = 40  # we overwrite this in the code below
@@ -42,6 +41,7 @@ def run_training_loop(params):
     #############
 
     # Get params, create logger, create TF session
+    # A logger is a component used in programming to record (log) messages or information about the execution of a program. 
     logger = Logger(params['logdir'])
 
     # Set random seeds
@@ -70,6 +70,8 @@ def run_training_loop(params):
     MAX_VIDEO_LEN = params['ep_len']
 
     assert isinstance(env.action_space, gym.spaces.Box), "Environment must be continuous"
+    #  gym.spaces.Box is a class that represents a continuous n-dimensional space where each dimension can take any value within a specified range.
+
     # Observation and action sizes
     ob_dim = env.observation_space.shape[0]
     ac_dim = env.action_space.shape[0]
@@ -116,7 +118,8 @@ def run_training_loop(params):
     for itr in range(params['n_iter']):
         print("\n\n********** Iteration %i ************"%itr)
 
-        # decide if videos should be rendered/logged at this iteration
+        # decide if videos should be rendered/logged at this iteration.
+        # if params['video_log_freq'] is 5, log_video will be True for iterations 5, 10, 15, etc. IF it is not -1.
         log_video = ((itr % params['video_log_freq'] == 0) and (params['video_log_freq'] != -1))
         # decide if metrics should be logged
         log_metrics = (itr % params['scalar_log_freq'] == 0)
@@ -271,5 +274,7 @@ def main():
     run_training_loop(params)
 
 
+# When a Python file is run directly, __name__ is set to "__main__".
+# When the same file is imported as a module in another script, __name__ is set to the name of the file/module.
 if __name__ == "__main__":
     main()

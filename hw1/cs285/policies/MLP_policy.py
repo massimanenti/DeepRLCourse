@@ -51,6 +51,9 @@ def build_mlp(
     layers.append(nn.Linear(in_size, output_size))
 
     mlp = nn.Sequential(*layers)
+    # nn.Sequential is a module in PyTorch that allows you to build 
+    # a neural network model where layers are arranged in a linear sequence.
+    # The *layers syntax unpacks the list so that each element of the list is passed as a separate argument to nn.Sequential.
     return mlp
 
 
