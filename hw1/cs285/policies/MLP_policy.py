@@ -122,7 +122,7 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         """
         torch.save(self.state_dict(), filepath)
 
-    def forward(self, observation: torch.FloatTensor) -> Any:
+    def forward(self, observation: torch.FloatTensor) -> distributions.Normal:
         """
         Defines the forward pass of the network
 
@@ -135,7 +135,11 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         # through it. For example, you can return a torch.FloatTensor. You can also
         # return more flexible objects, such as a
         # `torch.distributions.Distribution` object. It's up to you!
-        raise NotImplementedError
+
+        mean = self.mean_net(observation)
+        std = self.logstd.exp()
+
+        return distributions.Normal(mean, std)
 
     def update(self, observations, actions):
         """
