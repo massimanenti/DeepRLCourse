@@ -97,12 +97,15 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         self.training = training
         self.nn_baseline = nn_baseline
 
+        # self.mean_net will be a neural network that outputs the mean of the actions
         self.mean_net = build_mlp(
             input_size=self.ob_dim,
             output_size=self.ac_dim,
             n_layers=self.n_layers, size=self.size,
         )
         self.mean_net.to(ptu.device)
+        # recall that nn.Parameter(...) generates a learnable parameter. In this case it will probably
+        # represent the logarithm of the standard deviation of the policy.
         self.logstd = nn.Parameter(
 
             torch.zeros(self.ac_dim, dtype=torch.float32, device=ptu.device)
