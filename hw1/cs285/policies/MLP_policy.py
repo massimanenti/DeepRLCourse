@@ -145,8 +145,8 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         """
         Updates/trains the policy
 
-        :param observations: observation(s) to query the policy (train_batch_size, n_states)
-        :param actions: actions we want the policy to imitate (train_batch_size, n_actions)
+        :param observations: observation(s) to query the policy (train_batch_size, self.ob_dim)
+        :param actions: actions we want the policy to imitate (train_batch_size, self.ac_dim)
         :return:
             dict: 'Training Loss': supervised learning loss
         """
