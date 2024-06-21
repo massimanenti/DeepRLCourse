@@ -151,6 +151,7 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
             dict: 'Training Loss': supervised learning loss
         """
         # TODO: update the policy and return the loss
+        
         # Move data to the appropriate device
         observations = ptu.from_numpy(observations)
         actions = ptu.from_numpy(actions)
