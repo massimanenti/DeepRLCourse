@@ -33,6 +33,12 @@ class ReplayBuffer(object):
         # our arrays
         observations, actions, rewards, next_observations, terminals = (
             convert_listofrollouts(paths, concat_rew))
+        # convert_listofrollouts takes a list of rollout dictionaries and return separate arrays, 
+        # where each array is a concatenation of that array from across the rollouts.
+        # So, paths is a list of dictionaries. Each dictionary has the following keys:
+        # dict_keys(['observation', 'action', 'reward', 'next_observation', 'terminal'])
+        # With convert_listofrollouts we create 5 long arrays (obs, act, rew, next_obs, ter) which contain
+        # the info present in the list of dictionaries "path".
 
         if self.obs is None:
             self.obs = observations[-self.max_size:]

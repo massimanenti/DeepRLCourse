@@ -128,6 +128,14 @@ def run_training_loop(params):
         if itr == 0:
             # BC training from expert data.
             paths = pickle.load(open(params['expert_data'], 'rb'))
+            # (Ant case) paths is a list of 2 dictionaries. Each dictionary has the following keys:
+            # dict_keys(['observation', 'action', 'reward', 'next_observation', 'terminal'])
+            # a numpy.ndarray is associated to each key, and their shape is respectively (Ant case):
+            # (1000, 27)    --> for observation
+            # (1000, 8)     --> for action
+            # (1000,)       --> for reward
+            # (1000, 27)    --> for next_observation
+            # (1000,)       --> for terminal
             envsteps_this_batch = 0
         else:
             # DAGGER training from sampled data relabeled by expert
@@ -154,18 +162,18 @@ def run_training_loop(params):
         print('\nTraining agent using sampled data from replay buffer...')
         training_logs = []
         for _ in range(params['num_agent_train_steps_per_iter']):
+            # TODO: sample some data from replay_buffer
+            # HINT1: how much data = params['train_batch_size']
+            # HINT2: use np.random.permutation to sample random indices
+            # HINT3: return corresponding data points from each array (i.e., not different indices from each array)
+            # for imitation learning, we only need observations and actions.  
 
-          # TODO: sample some data from replay_buffer
-          # HINT1: how much data = params['train_batch_size']
-          # HINT2: use np.random.permutation to sample random indices
-          # HINT3: return corresponding data points from each array (i.e., not different indices from each array)
-          # for imitation learning, we only need observations and actions.  
-          
-          ob_batch, ac_batch = TODO
-
-          # use the sampled data to train an agent
-          train_log = actor.update(ob_batch, ac_batch)
-          training_logs.append(train_log)
+            ob_batch, ac_batch = TODO
+                
+            # 
+            # use the sampled data to train an agent
+            train_log = actor.update(ob_batch, ac_batch)
+            training_logs.append(train_log)
 
         # log/save
         print('\nBeginning logging procedure...')
