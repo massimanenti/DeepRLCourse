@@ -145,26 +145,34 @@ class MLPPolicySL(BasePolicy, nn.Module, metaclass=abc.ABCMeta):
         """
         Updates/trains the policy
 
-        :param observations: observation(s) to query the policy
-        :param actions: actions we want the policy to imitate
+        :param observations: observation(s) to query the policy (train_batch_size, n_states)
+        :param actions: actions we want the policy to imitate (train_batch_size, n_actions)
         :return:
             dict: 'Training Loss': supervised learning loss
         """
         # TODO: update the policy and return the loss
-        
-        # Move data to the appropriate device
+
+        # Move data to the appropriate device and converts numpy array to torch tensor
         observations = ptu.from_numpy(observations)
         actions = ptu.from_numpy(actions)
 
-        # generate distribution of the learned policy
-        action_distribution = self.forward(observations)
-        # Compute the loss as the negative log likelihood
-        loss = -action_distribution.log_prob(actions).sum()
-       
-        # Perform a gradient descent step
-        self.optimizer.zero_grad()
-        loss.backward()
-        self.optimizer.step()
+        # check dimension
+        dim_obs_batch = observations.shape
+        dim_act_batch = actions.shape
+        assert dim_obs_batch[0] == dim_act_batch[0], 'Error: the batch size of the observation array is different from the action one'
+        assert dim_obs_batch[1] == self.ob_dim, 'Error: observation dimension used in the batch not matching the expected one'
+        assert dim_act_batch[1] == self.ac_dim, 'Error: action dimension used in the batch not matching the expected one'
+
+        for curr_obs, curr_act in zip(observations, actions):
+            # generate distribution of the learned policy
+            action_distribution = self.forward(curr_obs)
+            # Compute the loss as the negative log likelihood
+            loss = -action_distribution.log_prob(curr_act).sum()
+        
+            # Perform a gradient descent step
+            self.optimizer.zero_grad()
+            loss.backward()
+            self.optimizer.step()
         return {
             # You can add extra logging information here, but keep this line
             'Training Loss': ptu.to_numpy(loss),
